@@ -19,6 +19,7 @@ const Account = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        handleEdit()
 
         /*
             when implemented with backend, it will get updated in the database

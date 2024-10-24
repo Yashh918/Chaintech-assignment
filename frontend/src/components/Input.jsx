@@ -24,8 +24,4 @@ Input.propTypes = {
     disabled: PropTypes.bool
 }
 
-Input.defaultProps = {
-    type: "text"
-};
-
 export default Input

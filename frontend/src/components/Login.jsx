@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import Input from './Input';
 import Button from './Button';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -17,6 +18,9 @@ const Login = () => {
             checking whether the user exists in the database and the password matches the one in db after hashing it
             as of now, there are no check and user will just be redirected to home page
         */
+
+        navigate('/home')
+        
     };
 
     return (

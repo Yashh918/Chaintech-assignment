@@ -3,19 +3,21 @@ import { useNavigate, Link } from 'react-router-dom'
 import Input from './Input';
 import Button from './Button';
 
-function validatePassword(password) {
+function validatePassword(password, confirmPassword) {
   const hasUpperCase = [...password].some(char => char >= 'A' && char <= "Z")
   const hasLowerCase = [...password].some(char => char >= 'a' && char <= "z")
   const hasDigit = [...password].some(char => char >= '0' && char <= "9")
   const hasSpecialChar = [...password].some(char => '!@#$%^&*()_+[]{};:,.<>/?'.includes(char))
   const isLongEnough = password.length >= 8
 
-  if (!(hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar)){
+  if (!(hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar)) {
     return `Password must contain atleast one uppercase character, one lowercase character, one digit, and one special character`
   }
-
-  if(!isLongEnough){
-    return "Password must be at least 8 characters long."
+  else if (!isLongEnough) {
+    return "Password must be at least 8 characters long"
+  }
+  else if (password !== confirmPassword) {
+    return "passwords must be matching"
   }
 
   return null
@@ -27,6 +29,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null)
+  const [isDisabled, setIsDisabled] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
@@ -43,13 +46,20 @@ const Register = () => {
       encrypting the password before storing it using bcrypt
     */
 
-    navigate('/login')
+      navigate('/login')
   };
 
   useEffect(() => {
-    const error = validatePassword(password);
+    const error = validatePassword(password, confirmPassword);
     setPasswordError(error);
-  }, [password]);
+
+    // now allowed to submit form when theres any error
+    if(error){
+      setIsDisabled(true)
+    }else{
+      setIsDisabled(false)
+    }
+  }, [password, confirmPassword]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -86,16 +96,10 @@ const Register = () => {
             setValue={setConfirmPassword}
             type='password'
           />
-          {
-            confirmPassword && (password !== confirmPassword) ? (
-              <p className='px-1 font-medium text-red-600'>
-                Passwords are not matching
-              </p>
-            ) : true
-          }
-          <Button 
+          <Button
             type="submit"
-            text="Register" 
+            text="Register"
+            isDisabled={isDisabled}
           />
         </form>
         <div className="mt-6 text-center">
